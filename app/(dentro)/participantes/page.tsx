@@ -1,4 +1,14 @@
-export default function ParticipantesPage() {
+import { sql } from "@vercel/postgres";
+import { NextResponse } from "next/server";
+import { db } from "@vercel/postgres";
+import { Metadata } from "next";
+import Counter from "@/app/comps/modal_new_aval";
+
+export const metadata: Metadata = {
+  title: "Participantes",
+};
+
+export default async function ParticipantesPage() {
   return (
     <div className="container mt-4">
       {/* Título e Subtítulo com botão Adicionar */}
@@ -7,14 +17,10 @@ export default function ParticipantesPage() {
           <h2>Participantes</h2>
           <p>Prepare os participantes para as avaliações</p>
         </div>
-        <button className="btn btn-primary">
-          <span className="btn-label">
-            <i className="fa fa-plus me-2"></i>
-          </span>
-          Adicionar
-        </button>
+        <Button variant="primary" onClick={handleShow}>
+          Criar Avaliação
+        </Button>
       </div>
-
       {/* Tabela com 2 colunas */}
       <table className="table">
         <thead>
