@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(dentro)/participantes/page.tsx", "app/(fora)/layout.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/(dentro)/participantes/page.tsx", "app/(fora)/layout.tsx", "app/comps/modal_new_aval.jsx"],
   "exclude": ["node_modules"]
 }
