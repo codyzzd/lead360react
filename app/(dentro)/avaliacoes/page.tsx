@@ -53,12 +53,12 @@ export default async function AvaliacoesPage() {
             </tr>
           </thead>
           <tbody>
-            {tests.map((tests) => (
-              <tr key={tests.id}>
-                <td className="align-middle">{tests.name}</td>
+            {tests.map((test) => (
+              <tr key={test.id}>
+                <td className="align-middle">{test.name}</td>
                 <td className="text-end">
                   <Link
-                    href={`/avaliacao/${tests.id}`}
+                    href={`/avaliacao/${test.id}`}
                     className="btn btn-sm btn-outline-primary me-2"
                   >
                     Entrar
@@ -69,7 +69,7 @@ export default async function AvaliacoesPage() {
                     className="btn btn-sm btn-light part_del"
                     data-bs-toggle="modal"
                     data-bs-target="#modal_excluir"
-                    data-aval-id={tests.id}
+                    data-aval-id={test.id}
                   >
                     <span className="btn-label">
                       <i className="fa fa-trash"></i>
