@@ -1,32 +1,30 @@
 import { ModalNewAval } from "@/app/comps/ModalNewAval";
-import { sql } from "@vercel/postgres";
 import { db } from "@vercel/postgres";
-import { Metadata } from "next";
 import Link from "next/link";
 
-//define o nome da pagina
-export const metadata: Metadata = {
+// Define the page name
+export const metadata = {
   title: "Avaliações",
 };
 
-// busca os testes no banco
+// Function to fetch tests from the database
 async function consulta_tests() {
   const client = await db.connect();
 
   try {
     const result = await client.query("SELECT * FROM tests");
-
     console.log("Select successfully:", result.rows);
     return result.rows;
-
+  } catch (error) {
+    console.error("Error selecting into the database:", error);
   } finally {
     client.release();
   }
 }
 
-//renderiza a pagina
+// Render the page
 export default async function AvaliacoesPage() {
-  const tests = await consulta_tests(); // pega os dados da consulta anterior
+  const tests = await consulta_tests(); // Get data from the previous query
 
   return (
     <>
@@ -43,7 +41,7 @@ export default async function AvaliacoesPage() {
           </div>
         </div>
 
-        {/* Tabela com 2 colunas */}
+        {/* Table with 2 columns */}
         <table className="table">
           <thead>
             <tr>
@@ -52,12 +50,12 @@ export default async function AvaliacoesPage() {
             </tr>
           </thead>
           <tbody>
-            {tests.map((tests) => (
-              <tr key={tests.id}>
-                <td className="align-middle">{tests.name}</td>
+            {tests.map((test) => (
+              <tr key={test.id}>
+                <td className="align-middle">{test.name}</td>
                 <td className="text-end">
                   <Link
-                    href={`/avaliacao/${tests.id}`}
+                    href={`/avaliacao/${test.id}`}
                     className="btn btn-sm btn-outline-primary me-2"
                   >
                     Entrar
@@ -68,7 +66,7 @@ export default async function AvaliacoesPage() {
                     className="btn btn-sm btn-light part_del"
                     data-bs-toggle="modal"
                     data-bs-target="#modal_excluir"
-                    data-aval-id={tests.id}
+                    data-aval-id={test.id}
                   >
                     <span className="btn-label">
                       <i className="fa fa-trash"></i>

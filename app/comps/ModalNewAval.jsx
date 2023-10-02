@@ -1,27 +1,26 @@
-"use client";
-
+'use client'
+import { v4 as uuidv4 } from "uuid";
+import { db } from "@vercel/postgres";
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
-import { sql } from "@vercel/postgres";
-import { db } from "@vercel/postgres";
-
 export function ModalNewAval() {
-  const [ModalNewAval, setShow] = useState(false);
-  const [NomeAvaliacao, setNomeAvaliacao] = useState("");
+  const [modalNewAval, setModalNewAval] = useState(false);
+  const [nomeAvaliacao, setNomeAvaliacao] = useState("");
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setModalNewAval(false);
+  const handleShow = () => setModalNewAval(true);
 
-  const NewAvalSQL = async () => {
+  const newAvalSQL = async () => {
     const client = await db.connect();
 
     try {
+      const uuid = uuidv4();
       const result = await client.query(
-        "INSERT INTO tests (id, name) VALUES (UUID(), $1)",
-        [NomeAvaliacao]
+        "INSERT INTO tests (id, name) VALUES ($1, $2)",
+        [uuid, nomeAvaliacao]
       );
 
       console.log("Inserted successfully:", result.rows);
@@ -36,7 +35,7 @@ export function ModalNewAval() {
 
   return (
     <>
-      <Button onClick={() => setShow(true)} className="me-2">
+      <Button onClick={handleShow} className="me-2">
         <span className="btn-label">
           <i className="fa fa-plus me-2"></i>
         </span>
@@ -44,8 +43,8 @@ export function ModalNewAval() {
       </Button>
 
       <Modal
-        show={ModalNewAval}
-        onHide={() => setShow(false)}
+        show={modalNewAval}
+        onHide={handleClose}
         aria-labelledby="example-modal-sizes-title-sm"
       >
         <Modal.Header closeButton>
@@ -60,7 +59,7 @@ export function ModalNewAval() {
               <Form.Control
                 type="text"
                 placeholder="ex: Setor Administrativo 1"
-                value={NomeAvaliacao}
+                value={nomeAvaliacao}
                 onChange={(e) => setNomeAvaliacao(e.target.value)}
               />
             </Form.Group>
@@ -70,8 +69,8 @@ export function ModalNewAval() {
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={NewAvalSQL}>
-            Criar Aavalição
+          <Button variant="primary" onClick={newAvalSQL}>
+            Criar Avaliação
           </Button>
         </Modal.Footer>
       </Modal>
