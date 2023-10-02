@@ -13,6 +13,10 @@ const connectionString = process.env.POSTGRES_URL;
 interface Database {
   tests: tests;
 }
+interface tests{
+  id:string;
+  name:string;
+}
 const db = createKysely<Database>({
   connectionString: connectionString,
 });

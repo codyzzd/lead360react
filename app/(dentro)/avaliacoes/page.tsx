@@ -11,10 +11,17 @@ import Button from "react-bootstrap/Button";
 
 /* --------------------------------- kysely --------------------------------- */
 import { createKysely } from "@vercel/postgres-kysely";
+const connectionString = process.env.POSTGRES_URL;
 interface Database {
   tests: tests;
 }
-const db = createKysely<Database>();
+interface tests {
+  id: string;
+  name: string;
+}
+const db = createKysely<Database>({
+  connectionString: connectionString,
+});
 
 /* ---------------------------- query no banco --------------------------- */
 async function selectAllFromTests() {
