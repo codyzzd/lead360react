@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     "app/(dentro)/participantes/page.tsx",
     "app/(fora)/layout.tsx",
-    "app/comps/modalnewaval.tsx"
+    "app/comps/ModalNewAval.tsx"
   ],
   "exclude": ["node_modules"]
 }

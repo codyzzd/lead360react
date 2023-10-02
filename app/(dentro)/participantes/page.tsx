@@ -2,7 +2,7 @@ import { sql } from "@vercel/postgres";
 import { NextResponse } from "next/server";
 import { db } from "@vercel/postgres";
 import { Metadata } from "next";
-import Counter from "@/app/comps/modalnewaval";
+import Counter from "@/app/comps/ModalNewAval";
 
 export const metadata: Metadata = {
   title: "Participantes",

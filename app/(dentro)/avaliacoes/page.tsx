@@ -1,4 +1,4 @@
-import { ModalNewAval } from "@/app/comps/modalnewaval";
+import { ModalNewAval } from "@/app/comps/ModalNewAval";
 import { sql } from "@vercel/postgres";
 import { db } from "@vercel/postgres";
 import { Metadata } from "next";
@@ -15,7 +15,10 @@ async function consulta_tests() {
 
   try {
     const result = await client.query("SELECT * FROM tests");
+
+    console.log("Select successfully:", result.rows);
     return result.rows;
+
   } finally {
     client.release();
   }
