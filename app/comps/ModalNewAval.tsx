@@ -7,20 +7,18 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
 /* --------------------------------- kysely --------------------------------- */
-
 import { createKysely } from "@vercel/postgres-kysely";
 const connectionString = process.env.POSTGRES_URL;
-interface Database {
-  tests: tests;
-}
-interface tests{
-  id:string;
-  name:string;
-}
 const db = createKysely<Database>({
   connectionString: connectionString,
 });
-
+export interface Database {
+  tests: tests;
+}
+interface tests {
+  id: string;
+  name: string;
+}
 /* ---------------------------- query no banco --------------------------- */
 async function insertIntoDatabase() {
   try {

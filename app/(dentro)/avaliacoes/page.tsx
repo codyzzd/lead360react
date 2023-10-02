@@ -12,7 +12,7 @@ import Button from "react-bootstrap/Button";
 /* --------------------------------- kysely --------------------------------- */
 import { createKysely } from "@vercel/postgres-kysely";
 const connectionString = process.env.POSTGRES_URL;
-interface Database {
+export interface Database {
   tests: tests;
 }
 interface tests {
