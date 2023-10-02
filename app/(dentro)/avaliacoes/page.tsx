@@ -1,13 +1,8 @@
+import { ModalNewAval } from "@/app/comps/modalnewaval";
 import { sql } from "@vercel/postgres";
 import { db } from "@vercel/postgres";
 import { Metadata } from "next";
 import Link from "next/link";
-import { Modal, Button, Form } from "react-bootstrap";
-import { BasicModal } from "@/app/comps/modal_new_aval";
-
-type Props = {
-  searchParams: Record<string, string> | null | undefined;
-};
 
 //define o nome da pagina
 export const metadata: Metadata = {
@@ -27,10 +22,8 @@ async function consulta_tests() {
 }
 
 //renderiza a pagina
-export default async function AvaliacoesPage({ searchParams }: Props) {
+export default async function AvaliacoesPage() {
   const tests = await consulta_tests(); // pega os dados da consulta anterior
-
-  const showModal = searchParams?.modal;
 
   return (
     <>
@@ -42,25 +35,7 @@ export default async function AvaliacoesPage({ searchParams }: Props) {
               <p>Crie avaliações e seus grupos de participantes.</p>
             </div>
             <div className="col-md-auto text-md-end text-end d-grid gap-2 d-md-block">
-              <Link href="?modal=true">Abrir modal</Link>
-
-              {showModal && <BasicModal />}
-              {/*
-               <Button onClick={() => setSmShow(true)} className="me-2">
-                Small modal
-              </Button>
-
-              <button
-                className="btn btn-primary"
-                data-bs-toggle="modal"
-                data-bs-target="#modal_new"
-                id="aval_new"
-              >
-                <span className="btn-label">
-                  <i className="fa fa-plus me-2"></i>
-                </span>
-                Criar avaliação
-    </button>*/}
+              <ModalNewAval />
             </div>
           </div>
         </div>
