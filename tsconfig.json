@@ -30,6 +30,6 @@
     "app/(dentro)/participantes/page.tsx",
     "app/(fora)/layout.tsx",
     "app/comps/ModalNewAval.jsx"
-, "app/(dentro)/avaliacoes/page.jsx"  ],
+, "app/(dentro)/avaliacoes/page.tsx"  ],
   "exclude": ["node_modules"]
 }

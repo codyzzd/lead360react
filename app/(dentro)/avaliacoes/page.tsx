@@ -1,30 +1,32 @@
 import { ModalNewAval } from "@/app/comps/ModalNewAval";
+
 import { db } from "@vercel/postgres";
+import { Metadata } from "next";
 import Link from "next/link";
 
-// Define the page name
-export const metadata = {
+//define o nome da pagina
+export const metadata: Metadata = {
   title: "Avaliações",
 };
 
-// Function to fetch tests from the database
+// busca os testes no banco
 async function consulta_tests() {
   const client = await db.connect();
 
   try {
     const result = await client.query("SELECT * FROM tests");
+
     console.log("Select successfully:", result.rows);
     return result.rows;
-  } catch (error) {
-    console.error("Error selecting into the database:", error);
+
   } finally {
     client.release();
   }
 }
 
-// Render the page
+//renderiza a pagina
 export default async function AvaliacoesPage() {
-  const tests = await consulta_tests(); // Get data from the previous query
+  const tests = await consulta_tests(); // pega os dados da consulta anterior
 
   return (
     <>
@@ -41,7 +43,7 @@ export default async function AvaliacoesPage() {
           </div>
         </div>
 
-        {/* Table with 2 columns */}
+        {/* Tabela com 2 colunas */}
         <table className="table">
           <thead>
             <tr>
@@ -50,12 +52,12 @@ export default async function AvaliacoesPage() {
             </tr>
           </thead>
           <tbody>
-            {tests.map((test) => (
-              <tr key={test.id}>
-                <td className="align-middle">{test.name}</td>
+            {tests.map((tests) => (
+              <tr key={tests.id}>
+                <td className="align-middle">{tests.name}</td>
                 <td className="text-end">
                   <Link
-                    href={`/avaliacao/${test.id}`}
+                    href={`/avaliacao/${tests.id}`}
                     className="btn btn-sm btn-outline-primary me-2"
                   >
                     Entrar
@@ -66,7 +68,7 @@ export default async function AvaliacoesPage() {
                     className="btn btn-sm btn-light part_del"
                     data-bs-toggle="modal"
                     data-bs-target="#modal_excluir"
-                    data-aval-id={test.id}
+                    data-aval-id={tests.id}
                   >
                     <span className="btn-label">
                       <i className="fa fa-trash"></i>
