@@ -9,20 +9,9 @@ import Form from "react-bootstrap/Form";
 /* --------------------------------- kysely --------------------------------- */
 
 import { createKysely } from "@vercel/postgres-kysely";
-<<<<<<< HEAD
 const connectionString = process.env.POSTGRES_URL;
 interface Database {
   tests: tests;
-=======
-const connectionString =
-  "postgres://default:1KhETrtkvln8@ep-calm-moon-28561890-pooler.us-east-1.postgres.vercel-storage.com:5432/verceldb";
-interface Database {
-  tests: Tests;
-}
-interface Tests {
-  id: string;
-  name: string;
->>>>>>> 3e8e709 (test)
 }
 const db = createKysely<Database>({
   connectionString: connectionString,
