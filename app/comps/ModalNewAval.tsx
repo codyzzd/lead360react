@@ -1,36 +1,59 @@
-'use client'
-import { v4 as uuidv4 } from "uuid";
-import { db } from "@vercel/postgres";
+"use client";
 import { useState } from "react";
+
+/* ------------------------------- components ------------------------------- */
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 
+/* --------------------------------- kysely --------------------------------- */
+
+import { createKysely } from "@vercel/postgres-kysely";
+const connectionString = process.env.POSTGRES_URL;
+interface Database {
+  tests: tests;
+}
+const db = createKysely<Database>({
+  connectionString: connectionString,
+});
+
+
+
+/* ---------------------------- query no banco --------------------------- */
+async function insertIntoDatabase() {
+  try {
+    const result = await db
+      .insertInto("tests")
+      .values({ id: "12321321312", name: "testx" })
+      .executeTakeFirst();
+    return result;
+  } catch (error) {
+    console.error('Error fetching data from "tests":', error);
+    throw new Error("Error fetching data from tests");
+  }
+}
+
+/* -------------------------- renderizar componente ------------------------- */
 export function ModalNewAval() {
   const [modalNewAval, setModalNewAval] = useState(false);
   const [nomeAvaliacao, setNomeAvaliacao] = useState("");
 
-  const handleClose = () => setModalNewAval(false);
   const handleShow = () => setModalNewAval(true);
 
-  const newAvalSQL = async () => {
-    const client = await db.connect();
+  const handleClose = () => {
+    setNomeAvaliacao(""); // Clear the input field
+    setModalNewAval(false);
+  };
 
+  const handleCreateAvaliacao = async () => {
     try {
-      const uuid = uuidv4();
-      const result = await client.query(
-        "INSERT INTO tests (id, name) VALUES ($1, $2)",
-        [uuid, nomeAvaliacao]
-      );
+      await insertIntoDatabase(); // Insert into the database
 
-      console.log("Inserted successfully:", result.rows);
+      // Close the modal and clear the input field
+      handleClose();
     } catch (error) {
-      console.error("Error inserting into the database:", error);
-    } finally {
-      client.release();
+      console.error("Error creating Avaliacao:", error);
     }
-
-    handleClose(); // Close the modal after insertion
   };
 
   return (
@@ -69,7 +92,7 @@ export function ModalNewAval() {
           <Button variant="secondary" onClick={handleClose}>
             Cancelar
           </Button>
-          <Button variant="primary" onClick={newAvalSQL}>
+          <Button variant="primary" onClick={handleCreateAvaliacao}>
             Criar Avaliação
           </Button>
         </Modal.Footer>

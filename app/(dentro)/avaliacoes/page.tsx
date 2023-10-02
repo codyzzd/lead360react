@@ -1,33 +1,43 @@
-import { ModalNewAval } from "@/app/comps/ModalNewAval";
-
-import { db } from "@vercel/postgres";
+/* -------------------------------- metadata -------------------------------- */
 import { Metadata } from "next";
-import Link from "next/link";
-
-import Button from "react-bootstrap/Button";
-
-//define o nome da pagina
 export const metadata: Metadata = {
   title: "Avaliações",
 };
 
-// busca os testes no banco
-async function consulta_tests() {
-  const client = await db.connect();
+/* ------------------------------- components ------------------------------- */
+import { ModalNewAval } from "@/app/comps/ModalNewAval";
+import Link from "next/link";
+import Button from "react-bootstrap/Button";
 
+/* --------------------------------- kysely --------------------------------- */
+import { createKysely } from "@vercel/postgres-kysely";
+interface Database {
+  tests: tests;
+}
+const db = createKysely<Database>();
+
+/* ---------------------------- query no banco --------------------------- */
+async function selectAllFromTests() {
   try {
-    const result = await client.query("SELECT * FROM tests");
-
-    console.log("Select successfully:", result.rows);
-    return result.rows;
-  } finally {
-    client.release();
+    const result = await db.selectFrom("tests").selectAll().execute();
+    return result;
+  } catch (error) {
+    console.error('Error fetching data from "tests":', error);
+    throw new Error("Error fetching data from tests");
   }
 }
 
-//renderiza a pagina
+/* ---------------------------- renderizar pagina --------------------------- */
 export default async function AvaliacoesPage() {
-  const tests = await consulta_tests(); // pega os dados da consulta anterior
+  let tests = [];
+
+  //fazer consulta no banco
+  try {
+    tests = await selectAllFromTests();
+    console.log("Tests successfully fetched:", tests);
+  } catch (error) {
+    console.error("Something went wrong:", error);
+  }
 
   return (
     <>
