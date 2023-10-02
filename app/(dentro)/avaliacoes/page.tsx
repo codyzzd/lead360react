@@ -4,6 +4,8 @@ import { db } from "@vercel/postgres";
 import { Metadata } from "next";
 import Link from "next/link";
 
+import Button from "react-bootstrap/Button";
+
 //define o nome da pagina
 export const metadata: Metadata = {
   title: "Avaliações",
@@ -18,7 +20,6 @@ async function consulta_tests() {
 
     console.log("Select successfully:", result.rows);
     return result.rows;
-
   } finally {
     client.release();
   }
