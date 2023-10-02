@@ -36,7 +36,7 @@ async function selectAllFromTests() {
 
 /* ---------------------------- renderizar pagina --------------------------- */
 export default async function AvaliacoesPage() {
-  let tests = [];
+  let tests:any[] = [];
 
   //fazer consulta no banco
   try {
