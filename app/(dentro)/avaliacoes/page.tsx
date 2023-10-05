@@ -40,16 +40,11 @@ async function fetchAllSurveys() {
 }
 */
 async function getSurveys() {
-  const res = await fetch(`${process.env.API_URL}/api/surveys`, {//pegando variavel dependendo do ambiente
+  const apiUrl = process.env.API_URL;
+  const res = await fetch(`${apiUrl}/api/surveys`, {
     method: "GET",
   });
-  // Set a breakpoint on this line
-  //console.log(res);
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-
   if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
     throw new Error("Failed to fetch data");
   }
   return res.json();
