@@ -9,42 +9,38 @@ import { ModalNewAval } from "@/app/comps/ModalNewAval";
 import Link from "next/link";
 import Button from "react-bootstrap/Button";
 
-/* --------------------------------- kysely --------------------------------- */
-import { createKysely } from "@vercel/postgres-kysely";
-const connectionString = process.env.POSTGRES_URL;
-export interface Database {
-  tests: tests;
-}
-interface tests {
-  id: string;
-  name: string;
-}
-const db = createKysely<Database>({
-  connectionString: connectionString,
-});
+/* --------------------------------- prisma --------------------------------- */
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
-/* ---------------------------- query no banco --------------------------- */
-async function selectAllFromTests() {
+// função que busca no banco
+async function getAllSurveys() {
   try {
-    const result = await db.selectFrom("tests").selectAll().execute();
-    return result;
+    const surveys = await prisma.surveys.findMany();
+    return surveys;
   } catch (error) {
-    console.error('Error fetching data from "tests":', error);
-    throw new Error("Error fetching data from tests");
+    console.error('Error fetching data from "surveys":', error);
+    throw new Error("Error fetching data from surveys");
+  }
+}
+
+// Ato de buscar os dados
+let surveys: any[] = []; //zera variavel
+async function fetchAllSurveys() {
+  try {
+    const allSurveys = await getAllSurveys();
+    surveys = allSurveys; // preenche variavel
+    console.log("All surveys:", allSurveys);
+  } catch (error) {
+    console.error("An error occurred:", error.message);
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
 /* ---------------------------- renderizar pagina --------------------------- */
 export default async function AvaliacoesPage() {
-  let tests:any[] = [];
-
-  //fazer consulta no banco
-  try {
-    tests = await selectAllFromTests();
-    console.log("Tests successfully fetched:", tests);
-  } catch (error) {
-    console.error("Something went wrong:", error);
-  }
+  await fetchAllSurveys(); //buscar dados do banco
 
   return (
     <>
@@ -56,7 +52,7 @@ export default async function AvaliacoesPage() {
               <p>Crie avaliações e seus grupos de participantes.</p>
             </div>
             <div className="col-md-auto text-md-end text-end d-grid gap-2 d-md-block">
-              <ModalNewAval />
+              {/*<ModalNewAval />*/}
             </div>
           </div>
         </div>
@@ -70,12 +66,12 @@ export default async function AvaliacoesPage() {
             </tr>
           </thead>
           <tbody>
-            {tests.map((test) => (
-              <tr key={test.id}>
-                <td className="align-middle">{test.name}</td>
+            {surveys.map((survey) => (
+              <tr key={survey.id}>
+                <td className="align-middle">{survey.name}</td>
                 <td className="text-end">
                   <Link
-                    href={`/avaliacao/${test.id}`}
+                    href={`/avaliacao/${survey.id}`}
                     className="btn btn-sm btn-outline-primary me-2"
                   >
                     Entrar
@@ -86,7 +82,7 @@ export default async function AvaliacoesPage() {
                     className="btn btn-sm btn-light part_del"
                     data-bs-toggle="modal"
                     data-bs-target="#modal_excluir"
-                    data-aval-id={test.id}
+                    data-aval-id={survey.id}
                   >
                     <span className="btn-label">
                       <i className="fa fa-trash"></i>

@@ -29,7 +29,9 @@
     ".next/types/**/*.ts",
     "app/(dentro)/participantes/page.tsx",
     "app/(fora)/layout.tsx",
-    "app/comps/ModalNewAval.tsx"
-, "app/(dentro)/avaliacoes/page.tsx"  ],
+    "app/comps/ModalNewAval.tsx",
+    "app/(dentro)/avaliacoes/page.tsx",
+    "app/api/surveys/[id]/route.ts"
+  ],
   "exclude": ["node_modules"]
 }
