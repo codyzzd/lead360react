@@ -44,6 +44,8 @@ async function getSurveys() {
   const res = await fetch(`${apiUrl}/api/surveys`, {
     method: "GET",
   });
+  console.log(apiUrl);
+  console.log(res);
   if (!res.ok) {
     throw new Error("Failed to fetch data");
   }
