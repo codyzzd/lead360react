@@ -32,7 +32,7 @@ async function fetchAllSurveys() {
     surveys = allSurveys; // preenche variavel
     console.log("All surveys:", allSurveys);
   } catch (error) {
-    console.error("An error occurred:", error.message);
+    console.error("An error occurred:", error);
   } finally {
     await prisma.$disconnect();
   }
