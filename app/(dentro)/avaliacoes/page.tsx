@@ -40,7 +40,7 @@ async function fetchAllSurveys() {
 }
 */
 async function getSurveys() {
-  const res = await fetch(`${process.env.API_URL}/api/surveys`, {
+  const res = await fetch(`${process.env.API_URL}/api/surveys`, {//pegando variavel dependendo do ambiente
     method: "GET",
   });
   // Set a breakpoint on this line
