@@ -10,6 +10,7 @@ import Link from "next/link";
 import Button from "react-bootstrap/Button";
 
 /* --------------------------------- prisma --------------------------------- */
+/*
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
@@ -37,10 +38,27 @@ async function fetchAllSurveys() {
     await prisma.$disconnect();
   }
 }
+*/
+async function getSurveys() {
+  const res = await fetch(`${process.env.API_URL}/api/surveys`, {
+    method: "GET",
+  });
+  // Set a breakpoint on this line
+  //console.log(res);
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
 
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error("Failed to fetch data");
+  }
+  return res.json();
+}
 /* ---------------------------- renderizar pagina --------------------------- */
 export default async function AvaliacoesPage() {
-  await fetchAllSurveys(); //buscar dados do banco
+  //await fetchAllSurveys(); //buscar dados do banco
+  const surveysData: any[] = await getSurveys();
+  const surveys = Array.from(surveysData);
 
   return (
     <>

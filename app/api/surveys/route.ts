@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const surveys = await prisma.surveys.findMany();
 
   try {
-    return NextResponse.json({ surveys }, { status: 200 });
+    return NextResponse.json(surveys, { status: 200 });
   } catch (error) {
     console.error("Error fetching surveys:", error);
     return NextResponse.json({ error }, { status: 500 });
