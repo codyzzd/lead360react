@@ -40,11 +40,11 @@ async function fetchAllSurveys() {
 }
 */
 async function getSurveys() {
-  //const APIurl = process.env.API_URL;
-  const res = await fetch(`https://lead360react.vercel.app/api/surveys`, {
+  const APIURL = process.env.API_URL;
+  const res = await fetch(`${APIURL}/api/surveys`, {
     method: "GET",
   });
-  //console.log(APIurl);
+  //console.log(APIURL);
   //console.log(res);
   if (!res.ok) {
     throw new Error("Failed to fetch data");
