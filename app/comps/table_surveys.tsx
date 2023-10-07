@@ -23,7 +23,7 @@ export async function TableSurveys() {
 
   return (
     <>
-      <table className="table">
+      <table className="table table-hover">
         <thead>
           <tr>
             <th scope="col">Nome</th>
