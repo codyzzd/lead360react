@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     "app/(dentro)/participantes/page.tsx",
     "app/(fora)/layout.tsx",
-    "app/comps/ModalNewAval.tsx",
+    "app/comps/modal_new_survey.tsx",
     "app/(dentro)/avaliacoes/page.tsx",
     "app/api/surveys/[id]/route.ts"
   ],

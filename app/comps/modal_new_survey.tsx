@@ -1,40 +1,18 @@
 "use client";
 import { useState } from "react";
+import { v4 } from "uuid";
+import { FormEvent } from "react";
 
 /* ------------------------------- components ------------------------------- */
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-
-/* --------------------------------- kysely --------------------------------- */
-import { createKysely } from "@vercel/postgres-kysely";
-const connectionString = process.env.POSTGRES_URL;
-const db = createKysely<Database>({
-  connectionString: connectionString,
-});
-export interface Database {
-  tests: tests;
-}
-interface tests {
-  id: string;
-  name: string;
-}
-/* ---------------------------- query no banco --------------------------- */
-async function insertIntoDatabase() {
-  try {
-    const result = await db
-      .insertInto("tests")
-      .values({ id: "12321321312", name: "testx" })
-      .executeTakeFirst();
-    return result;
-  } catch (error) {
-    console.error('Error fetching data from "tests":', error);
-    throw new Error("Error fetching data from tests");
-  }
-}
+import { useRouter } from "next/navigation";
 
 /* -------------------------- renderizar componente ------------------------- */
-export function ModalNewAval() {
+export function ModalNewSurvey() {
+  const router = useRouter();
+
   const [modalNewAval, setModalNewAval] = useState(false);
   const [nomeAvaliacao, setNomeAvaliacao] = useState("");
 
@@ -45,16 +23,42 @@ export function ModalNewAval() {
     setModalNewAval(false);
   };
 
-  const handleCreateAvaliacao = async () => {
-    try {
-      await insertIntoDatabase(); // Insert into the database
+  // adicionar survey
+  async function onSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); // nao submita o form
+    const formData = new FormData(event.currentTarget); // pega os dados
+    handleClose(); // fecha o modal
 
-      // Close the modal and clear the input field
-      handleClose();
-    } catch (error) {
-      console.error("Error creating Avaliacao:", error);
-    }
-  };
+    // Gera um ID usando a função uuidv4()
+    const id = v4();
+
+    // Adiciona o ID ao formulário
+    formData.append("id", id);
+
+    // Converte os dados em JSON
+    const data = JSON.stringify({
+      id: formData.get("id"),
+      name: formData.get("name"),
+    });
+    //console.log(data);
+
+    const APIURL = process.env.API_URL; // pega url
+    const response = await fetch(`/api/surveys`, {
+      method: "POST",
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    router.refresh();
+
+    //console.log(formData);
+
+    // Handle response if necessary
+    //const data = await response.json();
+    // ...
+  }
 
   return (
     <>
@@ -75,28 +79,28 @@ export function ModalNewAval() {
             Criar Avaliação
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Form>
+        <Form onSubmit={onSubmit}>
+          <Modal.Body>
             <Form.Group className="mb-3" controlId="NomeAvaliacao">
               <Form.Label>Nome da Avaliação</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="ex: Setor Administrativo 1"
                 value={nomeAvaliacao}
+                name="name"
                 onChange={(e) => setNomeAvaliacao(e.target.value)}
               />
             </Form.Group>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Cancelar
-          </Button>
-          <Button variant="primary" onClick={handleCreateAvaliacao}>
-            Criar Avaliação
-          </Button>
-        </Modal.Footer>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Cancelar
+            </Button>
+            <Button type="submit">Criar Avaliação</Button>
+          </Modal.Footer>
+        </Form>
       </Modal>
+
     </>
   );
 }
