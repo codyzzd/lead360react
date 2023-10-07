@@ -2,17 +2,16 @@
 import { useState } from "react";
 import { v4 } from "uuid";
 import { FormEvent } from "react";
-import { revalidatePath } from "next/cache";
 
 /* ------------------------------- components ------------------------------- */
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-//import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 /* -------------------------- renderizar componente ------------------------- */
 export function ModalNewSurvey() {
-  //const router = useRouter();
+  const router = useRouter();
 
   const [modalNewAval, setModalNewAval] = useState(false);
   const [nomeAvaliacao, setNomeAvaliacao] = useState("");
@@ -51,8 +50,8 @@ export function ModalNewSurvey() {
         "Content-Type": "application/json",
       },
     });
-    revalidatePath("/avaliacoes");
-    //router.refresh();
+
+    router.refresh();
 
     //console.log(formData);
 
@@ -101,6 +100,7 @@ export function ModalNewSurvey() {
           </Modal.Footer>
         </Form>
       </Modal>
+
     </>
   );
 }
