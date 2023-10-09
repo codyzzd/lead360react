@@ -1,47 +1,64 @@
+/* --------------------------------- config --------------------------------- */
 "use client";
-import { useState } from "react";
-import { v4 } from "uuid";
-import { FormEvent } from "react";
 
-/* ------------------------------- components ------------------------------- */
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-/* -------------------------- renderizar componente ------------------------- */
+/* ------------------------------- formulario ------------------------------- */
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+const FormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Avaliação deve ter mais de 2 letras.",
+  }),
+});
+/* ------------------------------- components ------------------------------- */
+import { useToast } from "@/components/ui/use-toast";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Plus } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+/* --------------------------------- funções -------------------------------- */
+
+/* ------------------------------- renderizar ------------------------------- */
 export function ModalNewSurvey() {
-  const router = useRouter();
+  const router = useRouter(); // Inicia router
+  const { toast } = useToast(); // Inicia o toast
 
-  const [modalNewAval, setModalNewAval] = useState(false);
-  const [nomeAvaliacao, setNomeAvaliacao] = useState("");
+  // Validação Form
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+  });
 
-  const handleShow = () => setModalNewAval(true);
-
-  const handleClose = () => {
-    setNomeAvaliacao(""); // Clear the input field
-    setModalNewAval(false);
-  };
-
-  // adicionar survey
-  async function onSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault(); // nao submita o form
-    const formData = new FormData(event.currentTarget); // pega os dados
-    handleClose(); // fecha o modal
-
-    // Gera um ID usando a função uuidv4()
-    const id = v4();
-
-    // Adiciona o ID ao formulário
-    formData.append("id", id);
+  // Função de Submit do form
+  async function onSubmit(values: z.infer<typeof FormSchema>) {
+    setOpen(false); // fecha o modal
 
     // Converte os dados em JSON
     const data = JSON.stringify({
-      id: formData.get("id"),
-      name: formData.get("name"),
+      name: values.name,
     });
-    //console.log(data);
 
+    // Executa api
     const APIURL = process.env.API_URL; // pega url
     const response = await fetch(`/api/surveys`, {
       method: "POST",
@@ -51,56 +68,55 @@ export function ModalNewSurvey() {
       },
     });
 
+    // Refresh na tela
     router.refresh();
 
-    //console.log(formData);
-
-    // Handle response if necessary
-    //const data = await response.json();
-    // ...
+    // Envia o toast
+    toast({
+      title: `Avaliação Criada!`,
+      /*description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),*/
+    });
   }
-
+  const [open, setOpen] = useState(false);
   return (
     <>
-      <Button onClick={handleShow} className="me-2">
-        <span className="btn-label">
-          <i className="fa fa-plus me-2"></i>
-        </span>
-        Criar Avaliação
-      </Button>
-
-      <Modal
-        show={modalNewAval}
-        onHide={handleClose}
-        aria-labelledby="example-modal-sizes-title-sm"
-      >
-        <Modal.Header closeButton>
-          <Modal.Title id="example-modal-sizes-title-sm">
-            Criar Avaliação
-          </Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={onSubmit}>
-          <Modal.Body>
-            <Form.Group className="mb-3" controlId="NomeAvaliacao">
-              <Form.Label>Nome da Avaliação</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="ex: Setor Administrativo 1"
-                value={nomeAvaliacao}
-                name="name"
-                onChange={(e) => setNomeAvaliacao(e.target.value)}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Cancelar
+      <Form {...form}>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button className="w-full md:w-auto">
+              <Plus strokeWidth={2} className="me-2 " />
+              Criar Avaliação
             </Button>
-            <Button type="submit">Criar Avaliação</Button>
-          </Modal.Footer>
-        </Form>
-      </Modal>
-
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle className="text-start">Criar Avaliação</DialogTitle>
+            </DialogHeader>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input placeholder="ex: Lideres de vendas" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <DialogFooter>
+                <Button type="submit">Criar</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </Form>
     </>
   );
 }

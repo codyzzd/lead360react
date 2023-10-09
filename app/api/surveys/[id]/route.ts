@@ -1,8 +1,12 @@
+/* --------------------------------- config --------------------------------- */
+import { NextResponse, NextRequest } from "next/server";
+/* --------------------------------- prisma --------------------------------- */
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import { NextResponse, NextRequest } from "next/server";
 
-// Acessar registro
+/* -------------------------------------------------------------------------- */
+/*                              acessar registro                              */
+/* -------------------------------------------------------------------------- */
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
@@ -30,7 +34,9 @@ export async function GET(
   }
 }
 
-// Deletar registro
+/* -------------------------------------------------------------------------- */
+/*                              deletar registro                              */
+/* -------------------------------------------------------------------------- */
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }
@@ -62,7 +68,9 @@ export async function DELETE(
   }
 }
 
-// Atualizar tudo
+/* -------------------------------------------------------------------------- */
+/*                             atualizar registro                             */
+/* -------------------------------------------------------------------------- */
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
